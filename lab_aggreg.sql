@@ -1,10 +1,11 @@
 
 USE sakila ;
+
 -- #1
 
-SELECT max(length) as max_duration FROM sakila.film;
+SELECT max(length) as max_duration , min(length) as min_duration FROM sakila.film;
 
-SELECT min(length) as min_duration FROM sakila.film;
+
 
 SELECT ROUND(AVG(length),0) as average_duration FROM sakila.film;
 
@@ -14,12 +15,12 @@ SELECT min(rental_date) from sakila.rental;
 
 SELECT DATEDIFF(max(rental_date),min(rental_date)) FROM sakila.rental;
 
-SELECT DATE_FORMAT(CONVERT(rental_date, DATE), '%Y') as 'year_rental', date_format(CONVERT(rental_date, DATE), '%M') as 'month_rental'
-FROM sakila.rental;
+SELECT DATE_FORMAT(CONVERT(rental_date, DATE), '%W') as 'week_rental', date_format(CONVERT(rental_date, DATE), '%M') as 'month_rental'
+FROM sakila.rental
+LIMIT 20;
 
 -- #3
-SELECT title, rental_duration FROM sakila.film
-WHERE  ISNULL(rental_duration) = 'Not available'
+SELECT title, IFNULL(rental_duration, 'Not available') as rental_duration FROM sakila.film
 ORDER BY title ASC;
 
 -- #4
@@ -45,11 +46,15 @@ ORDER BY COUNT(title),rating;
 -- #2
 SELECT * from sakila.film;
 
-SELECT  avg(length),rating from sakila.film
+SELECT  rating, round(avg(length),2) from sakila.film
 GROUP BY rating
 ORDER BY avg(length) DESC;
 
+
 -- The rating that have long movies are the PG-13. Where the mean of length is over then 120 minutes. 
+SELECT rating, ROUND(avg(length)) as avg_duration FROM sakila.film
+GROUP BY rating
+having avg(length) > 120;
 
 -- #3
 
